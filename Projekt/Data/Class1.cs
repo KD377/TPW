@@ -1,12 +1,11 @@
-﻿namespace Projekt
+﻿namespace Data
 {
-    public class Calculator
-    {   
+    internal class Calculator
+    {
         public int multiply(int x, int y)
         {
             return x * y;
         }
     }
 }
-
 

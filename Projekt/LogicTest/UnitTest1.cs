@@ -1,47 +1,67 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Logic;
+﻿using Logic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-namespace LogicTests
+namespace Tests
 {
     [TestClass]
-    public class BallTests
+    public class TimerApiTests
     {
-        [TestMethod]
-        public void TestBallConstructor()
-        {
-            // Arrange
-            int x = 10;
-            int y = 20;
-            int size = 30;
-            BallAPI ball = new BallAPI(x, y, size);
-
-            // Act
-            int actualX = ball.GetX();
-            int actualY = ball.GetY();
-            int actualSize = ball.GetSize();
-
-            // Assert
-            Assert.AreEqual(x, actualX);
-            Assert.AreEqual(y, actualY);
-            Assert.AreEqual(size, actualSize);
-        }
 
         [TestMethod]
-        public void TestBallProperties()
+        public void TestInterval()
         {
             // Arrange
-            BallAPI ball = new BallAPI(0, 0, 0);
+            TimerApi timer = TimerApi.CreateBallTimer();
+            TimeSpan interval = TimeSpan.FromMilliseconds(500);
 
             // Act
-            ball.SetX(10);
-            ball.SetY(20);
+            timer.Interval = interval;
 
             // Assert
-            Assert.AreEqual(10, ball.GetX());
-            Assert.AreEqual(20, ball.GetY());
-            Assert.AreEqual(0, ball.GetSize());
+            Assert.AreEqual(interval, timer.Interval);
         }
     }
 
-}
 
+
+    [TestClass]
+    public class BallsAPITests
+    {
+        [TestMethod]
+        public void TestCreateBalls()
+        {
+            // Arrange
+            BallsAPI api = new BallsAPI(800, 600);
+            int expectedCount = 5;
+
+            // Act
+            api.CreateBalls(expectedCount);
+
+            // Assert
+            Assert.AreEqual(expectedCount, api.GetBallsNumber());
+        }
+
+        [TestMethod]
+        public void TestMoveBalls()
+        {
+            // Arrange
+            BallsAPI api = new BallsAPI(800, 600);
+            api.CreateBalls(1);
+            int initialX = api.GetX(0);
+            int initialY = api.GetY(0);
+
+            // Act
+            api.Start();
+            System.Threading.Thread.Sleep(1000);
+            api.Stop();
+
+            // Assert
+            int newX = api.GetX(0);
+            int newY = api.GetY(0);
+            Assert.AreNotEqual(initialX, newX);
+            Assert.AreNotEqual(initialY, newY);
+        }
+
+    }
+}

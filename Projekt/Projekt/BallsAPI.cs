@@ -16,12 +16,13 @@ namespace Logic
             this.BoardWidth = widht;
             this.BoardHeight = height;
 
+            Timer.Tick += MoveBalls;
         }
 
         public void CreateBalls(int counter)
         {
 
-            if(counter >= 0)
+            if (counter >= 0)
             {
                 int radius = 20;
                 Random random = new Random();
@@ -29,7 +30,9 @@ namespace Logic
                 {
                     int x = random.Next(radius, BoardWidth - radius);
                     int y = random.Next(radius, BoardHeight - radius);
-                    Ball ball = new Ball(x, y, radius);
+                    int deltaX = random.Next(-10, 10 + 1);
+                    int deltaY = random.Next(-10, 10 + 1);
+                    Ball ball = new Ball(x, y, deltaX, deltaY, radius);
                     Balls.Add(ball);
 
                 }
@@ -38,7 +41,7 @@ namespace Logic
 
         public int GetX(int index)
         {
-            if(index >= 0 && index < Balls.Count)
+            if (index >= 0 && index < Balls.Count)
             {
                 return Balls[index].X;
             }
@@ -80,7 +83,14 @@ namespace Logic
             Timer.Interval = TimeSpan.FromMilliseconds(ms_period);
         }
 
+        private void MoveBalls(object sender, EventArgs e)
+        {
 
+            foreach (var ball in Balls)
+            {
+                ball.MoveBall(BoardWidth, BoardHeight);
+            }
+        }
 
     }
 }

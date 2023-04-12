@@ -37,6 +37,11 @@ namespace Logic
 
         public override TimeSpan Interval { get; set; }
 
+        public bool IsRunning()
+        {
+            return isRunning;
+        }
+
         public override event EventHandler Tick;
 
         public override void Start()

@@ -13,10 +13,8 @@ namespace Logic
         public abstract int BoardWidth { get; }
         public abstract int BoardHeight { get; }
         public abstract void CreateBall();
-       // public abstract void MoveBall(object sender, EventArgs e);
         public abstract void Start();
         public abstract void Stop();
-        //public abstract void SetPeriod(int ms_period);
 
         public abstract int GetX(int i);
         public abstract int GetY(int i);
@@ -35,32 +33,44 @@ namespace Logic
         public override  int BoardWidth { get; }
         public override  int BoardHeight { get; }
 
-        //private DataAPI data;
+        private DataAPI data;
 
         public BallsAPI(int widht, int height)
         {
             balls = new List<Ball>();
-            Timer = new System.Timers.Timer(1000); // 60 FPS
+            Timer = new System.Timers.Timer(1000/60); 
             Timer.Elapsed += OnTimerTick;
             this.BoardWidth = widht;
             this.BoardHeight = height;
-           // data = DataAPI.CreateDataAPI();
+            data = DataAPI.CreateDataAPI();
  
         }
 
         public override void CreateBall()
         {
             Random random = new Random();
-            int x = random.Next(0, BoardWidth);
-            int y = random.Next(0, BoardHeight);
-            int Vx = random.Next(-2, 3);
-            int Vy = random.Next(-2, 3);
-            int radius = 5;
+            int x = random.Next(20, BoardWidth-20);
+            int y = random.Next(20, BoardHeight-20);
+            int valueX = random.Next(-2, 3);
+            int valueY = random.Next(-2, 3);
+
+            if (valueX == 0)
+            {
+                valueX = random.Next(1, 3) * 2 - 3;
+            }
+            if (valueY == 0)
+            {
+                valueY = random.Next(1, 3) * 2 - 3;
+            }
+
+            int Vx = valueX;
+            int Vy = valueY;
+            int radius = 20;
             balls.Add(new Ball(x, y, Vx, Vy, radius));
         }
 
 
-        public void OnTimerTick(object sender, ElapsedEventArgs e)
+        private void OnTimerTick(object sender, ElapsedEventArgs e)
         {
             foreach (var ball in balls)
             {
@@ -119,11 +129,7 @@ namespace Logic
             
         }
 
-        /*public override void SetPeriod(int ms_period)
-        {
-            Timer.Interval = TimeSpan.FromMilliseconds(ms_period);
-        }*/
-
+     
 
     }
 }

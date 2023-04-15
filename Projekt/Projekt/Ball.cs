@@ -10,7 +10,7 @@ namespace Logic
         private int _deltaX;
         private int _deltaY;
         private readonly int _size;
-        public event PropertyChangedEventHandler PropertyChanged;
+        
 
         public Ball(int _x, int _y, int _deltaX, int _deltaY, int _size)
         {
@@ -28,11 +28,8 @@ namespace Logic
             set
             { 
                 _x = value;
-                OnPropertyChanged();
-            
+                OnPropertyChanged();          
             }
-        
-            
         }
 
         public int Y
@@ -64,9 +61,10 @@ namespace Logic
                 _deltaY = -_deltaY;
             }
             // move the ball in the set direction
-            _x += _deltaX;
-            _y += _deltaY;
+            X += _deltaX;
+            Y += _deltaY;
         }
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

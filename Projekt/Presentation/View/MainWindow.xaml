@@ -40,11 +40,11 @@
             <Button Content="Create Ball" Command="{Binding CreateBallCommand}" Margin="5" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
-            <Canvas RenderOptions.EdgeMode="Aliased" Background="WhiteSmoke" Margin="150,0,0,0">
-                <ItemsControl ItemsSource="{Binding Balls}" Background="AliceBlue">
+            <Canvas RenderOptions.EdgeMode="Aliased">
+                <ItemsControl ItemsSource="{Binding Balls}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <Canvas IsItemsHost="True"/>
+                            <Canvas IsItemsHost="True" Background="AliceBlue" HorizontalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -58,7 +58,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
+                        <Style TargetType="{x:Type ContentPresenter}">
                             <Setter Property="Canvas.Left" Value="{Binding X}" />
                             <Setter Property="Canvas.Top" Value="{Binding Y}" />
                         </Style>

@@ -22,7 +22,7 @@ namespace ViewModel
             StopCommand = new RelayCommand(Stop);
             CreateBallCommand = new RelayCommand(CreateBall);
             Balls = GetBalls();
-        }
+        } 
 
         public ObservableCollection<Ball> Balls
         {

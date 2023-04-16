@@ -23,7 +23,7 @@ namespace Logic
 
         public static BallsAbstractApi CreateApi(int width, int height)
         {
-            return new BallsAPI(width, height);
+            return new BallsAPI(width, height,DataAPI.CreateDataAPI());
         }
     }
     public class BallsAPI : BallsAbstractApi
@@ -35,14 +35,14 @@ namespace Logic
 
         private DataAPI data;
 
-        public BallsAPI(int widht, int height)
+        public BallsAPI(int widht, int height,DataAPI data)
         {
             balls = new List<Ball>();
             Timer = new System.Timers.Timer(1000/60); 
             Timer.Elapsed += OnTimerTick;
             this.BoardWidth = widht;
             this.BoardHeight = height;
-            data = DataAPI.CreateDataAPI();
+            this.data = data;
  
         }
 

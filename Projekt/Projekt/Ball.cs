@@ -52,11 +52,11 @@ namespace Logic
         public void MoveBall(int boardWidth, int boardHeight)
         {
             //check collision with board borders
-            if (((_x + _deltaX) - _size) < 0 || _x + _deltaX + _size > boardWidth)
+            if ((_x + _deltaX) < 0 || _x + _deltaX  >= boardWidth)
             {
                 _deltaX = -_deltaX;
             }
-            if (((_y + _deltaY) - _size) < 0 || _y + _deltaY + _size > boardHeight)
+            if ((_y + _deltaY)  < 0 || _y + _deltaY  >= boardHeight)
             {
                 _deltaY = -_deltaY;
             }

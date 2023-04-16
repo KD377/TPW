@@ -40,8 +40,8 @@
             <Button Content="Create Ball" Command="{Binding CreateBallCommand}" Margin="5" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
-            <Canvas RenderOptions.EdgeMode="Aliased">
-                <ItemsControl ItemsSource="{Binding Balls}">
+            <Canvas RenderOptions.EdgeMode="Aliased" Margin="220,40" Background="#3f3f3f" Height="335">
+                <ItemsControl ItemsSource="{Binding Balls}" Padding="0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas IsItemsHost="True" Background="AliceBlue" HorizontalAlignment="Center"/>

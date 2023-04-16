@@ -26,7 +26,7 @@ namespace Logic
             return new BallsAPI(width, height,DataAPI.CreateDataAPI());
         }
     }
-    public class BallsAPI : BallsAbstractApi
+    internal class BallsAPI : BallsAbstractApi
     {
         public System.Timers.Timer Timer;
         public override List<Ball> balls { get; }

@@ -9,7 +9,7 @@ namespace DataTests
         [TestMethod]
         public void TestCreateDataAPI()
         {
-            // Arrange
+           
             DataAPI dataAPI = null;
         
             dataAPI = DataAPI.CreateDataAPI();

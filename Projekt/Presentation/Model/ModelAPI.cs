@@ -3,30 +3,42 @@ using System.Collections.ObjectModel;
 
 namespace Model
 {
-    public class ModelAPI
+
+    public abstract class ModelAPI
+    {
+        public abstract void Start();
+        public abstract void Stop();
+        public abstract void CreateBall();
+        public abstract ObservableCollection<Ball> GetBalls();
+        public static ModelAPI CreateModelAPI(int boardWidht, int boardHeight)
+        {
+            return new Model( BallsAbstractApi.CreateApi(boardWidht, boardHeight));
+        }
+    }
+    internal class Model : ModelAPI
     {
         private BallsAbstractApi _BallsAPI;
 
-        public ModelAPI(int boardWidth, int boardHeight)
+        public Model (BallsAbstractApi _BallsAPI)
         {
-            _BallsAPI = BallsAbstractApi.CreateApi(boardWidth, boardHeight);
+            this._BallsAPI = _BallsAPI;
         }
 
-        public void Start()
+        public override void Start()
         {
             _BallsAPI.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             _BallsAPI.Stop();
         }
 
-        public void CreateBall()
+        public override void CreateBall()
         {
             _BallsAPI.CreateBall();
         }
-        public ObservableCollection<Ball> GetBalls()
+        public override ObservableCollection<Ball> GetBalls()
         {
             ObservableCollection<Ball> balls = new ObservableCollection<Ball>();
             foreach (Ball ball in _BallsAPI.balls)

@@ -7,15 +7,34 @@ using System.Windows.Input;
 
 namespace ViewModel
 {
-    public class ViewModelAPI : INotifyPropertyChanged
+    public abstract class ViewModelAPI
+    {
+        public abstract ObservableCollection<Ball> Balls { get; set; }
+        public abstract ICommand StartCommand { get; }
+        public abstract ICommand StopCommand { get; }
+        public abstract ICommand CreateBallCommand { get; }
+
+        public abstract void Start();
+        public abstract void Stop();
+        public abstract void CreateBall();
+        public abstract ObservableCollection<Ball> GetBalls();
+
+        public static ViewModelAPI CreateViewModelAPI(int boardWidht,int boardHeight)
+        {
+            return new ViewModel(ModelAPI.CreateModelAPI(boardWidht, boardHeight));
+        }
+
+
+    }
+    internal class ViewModel :ViewModelAPI,INotifyPropertyChanged
     {
         private readonly ModelAPI _model;
-        private ObservableCollection<Ball> _balls;
-        public ICommand StartCommand { get; }
-        public ICommand StopCommand { get; }
-        public ICommand CreateBallCommand { get; }
+        private ObservableCollection<Ball> balls;
+        public override ICommand StartCommand { get; }
+        public override ICommand StopCommand { get; }
+        public override ICommand CreateBallCommand { get; }
 
-        public ViewModelAPI(ModelAPI model)
+        public ViewModel(ModelAPI model)
         {
             _model = model;
             StartCommand = new RelayCommand(Start);
@@ -24,33 +43,33 @@ namespace ViewModel
             Balls = GetBalls();
         } 
 
-        public ObservableCollection<Ball> Balls
+        public override ObservableCollection<Ball> Balls
         {
-            get => _balls;
+            get => balls;
             set
             {
-                _balls = value;
+                balls = value;
                 OnPropertyChanged();
             }
         }
 
-        public void Start()
+        public override void Start()
         {
             _model.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             _model.Stop();
         }
 
-        public void CreateBall()
+        public override void CreateBall()
         {
             _model.CreateBall();
             Balls = GetBalls();
         }
 
-        public ObservableCollection<Ball> GetBalls()
+        public override ObservableCollection<Ball> GetBalls()
         {
             return _model.GetBalls();
         }

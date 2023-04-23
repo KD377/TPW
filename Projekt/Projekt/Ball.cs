@@ -3,7 +3,21 @@ using System.Runtime.CompilerServices;
 
 namespace Logic
 {
-    public class Ball : INotifyPropertyChanged
+    public abstract class BallAPI
+    {
+        public abstract int X { get; set; }
+        public abstract int Y { get; set; }
+        public abstract int Diameter { get; }
+        public abstract int Size { get; }
+        public abstract void MoveBall(int boardWidth, int boardHeight);
+        public static BallAPI CreateBallAPI(int _x, int _y, int _deltaX, int _deltaY, int _size)
+        {
+            return new Ball(_x, _y, _deltaX, _deltaY, _size);
+        }
+
+    }
+
+    internal class Ball : BallAPI, INotifyPropertyChanged
     {
         private int _x;
         private int _y;
@@ -22,7 +36,7 @@ namespace Logic
 
         }
 
-        public int X
+        public override int X
         {
             get { return _x; }
             set
@@ -32,7 +46,7 @@ namespace Logic
             }
         }
 
-        public int Y
+        public override int Y
         {
             get { return _y; }
             set 
@@ -42,14 +56,14 @@ namespace Logic
             }
         }
 
-        public int Diameter
+        public override int Diameter
         {
             get { return _size * 2; }
         }
 
-        public int Size { get => _size; }
+        public override int Size { get => _size; }
 
-        public void MoveBall(int boardWidth, int boardHeight)
+        public override void MoveBall(int boardWidth, int boardHeight)
         {
             //check collision with board borders
             if ((_x + _deltaX) < 0 || _x + _deltaX  >= boardWidth)

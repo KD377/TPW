@@ -9,7 +9,7 @@ namespace Logic
 
     public abstract class BallsAbstractApi
     {
-        public abstract List<Ball> balls { get; }
+        public abstract List<BallAPI> balls { get; }
         public abstract int BoardWidth { get; }
         public abstract int BoardHeight { get; }
         public abstract void CreateBall();
@@ -29,18 +29,19 @@ namespace Logic
     internal class BallsAPI : BallsAbstractApi
     {
         public System.Timers.Timer Timer;
-        public override List<Ball> balls { get; }
+        public override List<BallAPI> balls { get; }
         public override  int BoardWidth { get; }
         public override  int BoardHeight { get; }
 
         private DataAPI data;
+    
 
-        public BallsAPI(int widht, int height,DataAPI data)
+        public BallsAPI(int width, int height,DataAPI data)
         {
-            balls = new List<Ball>();
+            balls = new List<BallAPI>();
             Timer = new System.Timers.Timer(1000/60); 
             Timer.Elapsed += OnTimerTick;
-            this.BoardWidth = widht;
+            this.BoardWidth = width;
             this.BoardHeight = height;
             this.data = data;
  
@@ -66,7 +67,7 @@ namespace Logic
             int Vx = valueX;
             int Vy = valueY;
             int radius = 20;
-            balls.Add(new Ball(x, y, Vx, Vy, radius));
+            balls.Add(BallAPI.CreateBallAPI(x, y, Vx, Vy, radius));
         }
 
 

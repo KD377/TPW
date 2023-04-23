@@ -1,5 +1,4 @@
-﻿using Logic;
-using Model;
+﻿using Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -9,7 +8,7 @@ namespace ViewModel
 {
     public abstract class ViewModelAPI
     {
-        public abstract ObservableCollection<Ball> Balls { get; set; }
+        public abstract ObservableCollection<object> Balls { get; set; }
         public abstract ICommand StartCommand { get; }
         public abstract ICommand StopCommand { get; }
         public abstract ICommand CreateBallCommand { get; }
@@ -17,7 +16,7 @@ namespace ViewModel
         public abstract void Start();
         public abstract void Stop();
         public abstract void CreateBall();
-        public abstract ObservableCollection<Ball> GetBalls();
+        public abstract ObservableCollection<object> GetBalls();
 
         public static ViewModelAPI CreateViewModelAPI(int boardWidht,int boardHeight)
         {
@@ -29,7 +28,7 @@ namespace ViewModel
     internal class ViewModel :ViewModelAPI,INotifyPropertyChanged
     {
         private readonly ModelAPI _model;
-        private ObservableCollection<Ball> balls;
+        private ObservableCollection<object> balls;
         public override ICommand StartCommand { get; }
         public override ICommand StopCommand { get; }
         public override ICommand CreateBallCommand { get; }
@@ -43,7 +42,7 @@ namespace ViewModel
             Balls = GetBalls();
         } 
 
-        public override ObservableCollection<Ball> Balls
+        public override ObservableCollection<object> Balls
         {
             get => balls;
             set
@@ -69,7 +68,7 @@ namespace ViewModel
             Balls = GetBalls();
         }
 
-        public override ObservableCollection<Ball> GetBalls()
+        public override ObservableCollection<object> GetBalls()
         {
             return _model.GetBalls();
         }

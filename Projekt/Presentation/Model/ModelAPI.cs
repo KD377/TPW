@@ -9,7 +9,7 @@ namespace Model
         public abstract void Start();
         public abstract void Stop();
         public abstract void CreateBall();
-        public abstract ObservableCollection<Ball> GetBalls();
+        public abstract ObservableCollection<object> GetBalls();
         public static ModelAPI CreateModelAPI(int boardWidht, int boardHeight)
         {
             return new Model( BallsAbstractApi.CreateApi(boardWidht, boardHeight));
@@ -38,10 +38,10 @@ namespace Model
         {
             _BallsAPI.CreateBall();
         }
-        public override ObservableCollection<Ball> GetBalls()
+        public override ObservableCollection<object> GetBalls()
         {
-            ObservableCollection<Ball> balls = new ObservableCollection<Ball>();
-            foreach (Ball ball in _BallsAPI.balls)
+            ObservableCollection<object> balls = new ObservableCollection<object>();
+            foreach (BallAPI ball in _BallsAPI.balls)
                 balls.Add(ball);
             return balls;
         }

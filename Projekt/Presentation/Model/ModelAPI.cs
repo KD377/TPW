@@ -10,9 +10,17 @@ namespace Model
         public abstract void Stop();
         public abstract void CreateBall();
         public abstract ObservableCollection<object> GetBalls();
-        public static ModelAPI CreateModelAPI(int boardWidht, int boardHeight)
+        public static ModelAPI CreateModelAPI(int boardWidht, int boardHeight,BallsAbstractApi logicAPI)
         {
-            return new Model( BallsAbstractApi.CreateApi(boardWidht, boardHeight));
+            if (logicAPI == null)
+            {
+                return new Model( BallsAbstractApi.CreateApi(boardWidht, boardHeight,null));
+            }
+            else
+            {
+                return new Model(logicAPI);
+            }
+            
         }
     }
     internal class Model : ModelAPI

@@ -21,9 +21,17 @@ namespace Logic
         public abstract int GetSize(int i);
         public abstract int GetBallsNumber();
 
-        public static BallsAbstractApi CreateApi(int width, int height)
+        public static BallsAbstractApi CreateApi(int width, int height,DataAPI data)
         {
-            return new BallsAPI(width, height,DataAPI.CreateDataAPI());
+            if (data == null)
+            {
+                return new BallsAPI(width, height, DataAPI.CreateDataAPI());
+
+            }
+            else { 
+                return new BallsAPI(width, height, data);
+            }
+            
         }
     }
     internal class BallsAPI : BallsAbstractApi

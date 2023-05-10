@@ -1,4 +1,5 @@
 ﻿using Logic;
+using Data;
 
 
 namespace UnitTestProject
@@ -8,10 +9,15 @@ namespace UnitTestProject
     {
         private BallsAbstractApi ballsApi;
 
+        public class TestData : DataAPI
+        {
+            public TestData() { }
+        }
+
         [TestInitialize]
         public void TestInitialize()
         {
-            ballsApi = BallsAbstractApi.CreateApi(800, 600);
+            ballsApi = BallsAbstractApi.CreateApi(800, 600,new TestData());
         }
 
         [TestMethod]

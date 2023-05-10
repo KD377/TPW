@@ -20,7 +20,7 @@ namespace ViewModel
 
         public static ViewModelAPI CreateViewModelAPI(int boardWidht,int boardHeight)
         {
-            return new ViewModel(ModelAPI.CreateModelAPI(boardWidht, boardHeight));
+            return new ViewModel(ModelAPI.CreateModelAPI(boardWidht, boardHeight,null));
         }
 
 

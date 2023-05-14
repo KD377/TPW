@@ -14,7 +14,6 @@ namespace Data
 
         public abstract bool isSimulationRunning { get; set; }
 
-
         public abstract void subscribeToPropertyChanged(PropertyChangedEventHandler handler);
 
         public abstract void setVelocity(int Vx, int Vy);

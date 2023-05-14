@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -49,7 +48,6 @@ namespace Data
             int valueX = random.Next(-3, 4);
             int valueY = random.Next(-3, 4);
             Vector2 position = new Vector2((int)x, (int)y);
-            Debug.WriteLine(position);
 
             if (valueX == 0)
             {

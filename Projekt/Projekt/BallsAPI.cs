@@ -58,20 +58,6 @@ namespace Logic
  
         }
 
-        private bool isBallSpawned(BallAPI ball1,BallAPI ball2)
-        {
-            Vector2 position1 = ball1.Position;
-            Vector2 position2 = ball2.Position;
-            int distance = (int)Math.Sqrt(Math.Pow((position1.X + ball1.Vx) - (position2.X + ball2.Vx), 2) + Math.Pow((position1.Y + ball1.Vx) - (position2.Y + ball2.Vy), 2));
-            if (distance <= ball1.Size / 2 + ball2.Size / 2)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
 
 
         public override void CreateBall()
@@ -79,10 +65,10 @@ namespace Logic
             BallAPI ball = data.createBall(true);
             balls.Add(ball);
             ball.subscribeToPropertyChanged(CheckCollisions);
-           
         }
 
-        private void CheckCollisionWithOtherBall(BallAPI ball1, BallAPI ball2)
+
+        private bool CheckCollisionWithOtherBall(BallAPI ball1, BallAPI ball2)
         {
             Vector2 position1 = ball1.Position;
             Vector2 position2 = ball2.Position;
@@ -97,16 +83,20 @@ namespace Logic
                     int v2x = ball2.Vx;
                     int v2y = ball2.Vy;
 
-                    ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
-                    ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
-                    ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
-                    ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                    int newV1X = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
+                    int newV1Y = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
+                    int newV2X = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
+                    int newV2Y = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                    ball1.setVelocity(newV1X, newV1Y);
+                    ball2.setVelocity(newV2X, newV2Y);
                 }
                 finally
                 {
                     readerWriterLockSlim.ExitWriteLock();
                 }
+                return false;
             }
+            return true;
             
         }
 

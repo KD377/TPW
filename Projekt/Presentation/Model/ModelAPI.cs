@@ -49,7 +49,7 @@ namespace Model
         public override ObservableCollection<object> GetBalls()
         {
             ObservableCollection<object> balls = new ObservableCollection<object>();
-            foreach (BallAPI ball in _BallsAPI.balls)
+            foreach (object ball in _BallsAPI.balls)
                 balls.Add(ball);
             return balls;
         }

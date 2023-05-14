@@ -10,18 +10,12 @@ namespace Data
 {
     public abstract class DataAPI
     {
-        public abstract BallAPI createBall(CancellationTokenSource cancellationTokenSource);
+        public abstract BallAPI createBall(bool isSimulationRunning);
         public abstract int getBoardWidth();
         public abstract int getBoardHeight();
-<<<<<<< HEAD
-        public static DataAPI CreateDataAPI(int boardWidth,int boardHeight)
-        {
-            return new Data(boardWidth,boardHeight);
-=======
         public static DataAPI CreateDataAPI(int boardWidth, int boardHeight)
         {
             return new Data(boardWidth, boardHeight);
->>>>>>> refs/remotes/origin/main
         }
 
 
@@ -31,11 +25,8 @@ namespace Data
         private int _boardWidth;
         private int _boardHeight;
 
-<<<<<<< HEAD
-        public Data(int boardWidth,int boardHeight) 
-=======
         public Data(int boardWidth, int boardHeight)
->>>>>>> refs/remotes/origin/main
+
         {
             _boardWidth = boardWidth;
             _boardHeight = boardHeight;
@@ -50,7 +41,7 @@ namespace Data
             return _boardHeight;
         }
 
-        public override BallAPI createBall(CancellationTokenSource cancellationTokenSource)
+        public override BallAPI createBall(bool isSimulationRunning)
         {
             Random random = new Random();
             int x = random.Next(20, _boardWidth - 20);
@@ -73,7 +64,7 @@ namespace Data
             int Vy = valueY;
             int radius = 20;
             int mass = 200;
-            return BallAPI.CreateBallAPI(position, Vx, Vy, radius, mass, cancellationTokenSource);
+            return BallAPI.CreateBallAPI(position, Vx, Vy, radius, mass,isSimulationRunning);
         }
 
 

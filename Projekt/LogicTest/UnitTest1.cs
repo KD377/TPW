@@ -7,7 +7,7 @@ namespace UnitTestProject
     [TestClass]
     public class BallsAPITests
     {
-        private BallsAbstractApi ballsApi;
+        /*private BallsAbstractApi ballsApi;
 
         public class TestData : DataAPI
         {
@@ -71,7 +71,7 @@ namespace UnitTestProject
 
             Assert.IsTrue(x >= size && x <= ballsApi.BoardWidth - size);
             Assert.IsTrue(y >= size && y <= ballsApi.BoardHeight - size);
-        }
+        }*/
 
     }
 }

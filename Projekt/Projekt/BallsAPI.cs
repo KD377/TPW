@@ -76,7 +76,7 @@ namespace Logic
 
         public override void CreateBall()
         {
-            BallAPI ball = data.createBall(cancellationTokenSource);
+            BallAPI ball = data.createBall(true);
             balls.Add(ball);
             ball.subscribeToPropertyChanged(CheckCollisions);
            
@@ -172,8 +172,7 @@ namespace Logic
         {
           foreach(var ball in balls)
             {
-                ball.CancellationTokenSource = new CancellationTokenSource();
-                ball.Start();
+                ball.isSimulationRunning = true;
             }
         }
 
@@ -181,7 +180,7 @@ namespace Logic
         {
             foreach (var ball in balls)
             {
-                ball.CancellationTokenSource.Cancel();
+                ball.isSimulationRunning = false;
             }
         }
 

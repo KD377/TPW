@@ -13,9 +13,15 @@ namespace Data
         public abstract BallAPI createBall(CancellationTokenSource cancellationTokenSource);
         public abstract int getBoardWidth();
         public abstract int getBoardHeight();
+<<<<<<< HEAD
         public static DataAPI CreateDataAPI(int boardWidth,int boardHeight)
         {
             return new Data(boardWidth,boardHeight);
+=======
+        public static DataAPI CreateDataAPI(int boardWidth, int boardHeight)
+        {
+            return new Data(boardWidth, boardHeight);
+>>>>>>> refs/remotes/origin/main
         }
 
 
@@ -25,7 +31,11 @@ namespace Data
         private int _boardWidth;
         private int _boardHeight;
 
+<<<<<<< HEAD
         public Data(int boardWidth,int boardHeight) 
+=======
+        public Data(int boardWidth, int boardHeight)
+>>>>>>> refs/remotes/origin/main
         {
             _boardWidth = boardWidth;
             _boardHeight = boardHeight;

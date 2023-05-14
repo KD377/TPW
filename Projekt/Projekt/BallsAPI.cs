@@ -42,11 +42,11 @@ namespace Logic
     {
     
         public override List<BallAPI> balls { get; }
+        private static readonly ReaderWriterLockSlim readerWriterLockSlim = new ReaderWriterLockSlim();
         public override  int BoardWidth { get; }
         public override  int BoardHeight { get; }
 
         private DataAPI data;
-        private CancellationTokenSource cancellationTokenSource = null;
     
 
         public BallsAPI(DataAPI data)
@@ -89,35 +89,52 @@ namespace Logic
             int distance = (int)Math.Sqrt(Math.Pow((position1.X + ball1.Vx) - (position2.X + ball2.Vx), 2) + Math.Pow((position1.Y + ball1.Vx) - (position2.Y + ball2.Vy), 2));
             if (distance <= ball1.Size / 2 + ball2.Size / 2 )
             {
-                // collision detected
-                int v1x = ball1.Vx;
-                int v1y = ball1.Vy;
-                int v2x = ball2.Vx;
-                int v2y = ball2.Vy;
+                readerWriterLockSlim.EnterWriteLock();
+                try
+                {
+                    int v1x = ball1.Vx;
+                    int v1y = ball1.Vy;
+                    int v2x = ball2.Vx;
+                    int v2y = ball2.Vy;
 
-                ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
-                ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
-                ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
-                ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                    ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
+                    ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
+                    ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
+                    ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                }
+                finally
+                {
+                    readerWriterLockSlim.ExitWriteLock();
+                }
             }
             
         }
 
         private void CheckCollisionWithBoard(BallAPI ball)
         {
-            int Vx = ball.Vx;
-            int Vy = ball.Vy;
-            Vector2 position = ball.Position;
-            if (position.X + ball.Vx < 0 || position.X + ball.Vx >= BoardWidth)
+            readerWriterLockSlim.EnterWriteLock();
+            try
             {
-                 Vx = -ball.Vx;
-            }
+                int Vx = ball.Vx;
+                int Vy = ball.Vy;
+                Vector2 position = ball.Position;
 
-            if (position.Y + ball.Vy < 0 || position.Y + ball.Vy >= BoardHeight)
-            {
-                 Vy = -ball.Vy;
+                if (position.X + ball.Vx < 0 || position.X + ball.Vx >= BoardWidth)
+                {
+                    Vx = -ball.Vx;
+                }
+
+                if (position.Y + ball.Vy < 0 || position.Y + ball.Vy >= BoardHeight)
+                {
+                    Vy = -ball.Vy;
+                }
+
+                ball.setVelocity(Vx, Vy);
             }
-            ball.setVelocity(Vx, Vy);
+            finally
+            {
+                readerWriterLockSlim.ExitWriteLock();
+            }
         }
 
         private void CheckCollisions(object sender,PropertyChangedEventArgs e)

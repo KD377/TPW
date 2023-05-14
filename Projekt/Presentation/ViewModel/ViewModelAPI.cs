@@ -9,6 +9,7 @@ namespace ViewModel
     public abstract class ViewModelAPI
     {
         public abstract ObservableCollection<object> Balls { get; set; }
+
         public abstract ICommand StartCommand { get; }
         public abstract ICommand StopCommand { get; }
         public abstract ICommand CreateBallCommand { get; }
@@ -56,6 +57,7 @@ namespace ViewModel
         {
             _model.Start();
         }
+
 
         public override void Stop()
         {

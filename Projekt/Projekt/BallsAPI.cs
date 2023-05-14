@@ -1,6 +1,8 @@
 ﻿using Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Numerics;
 using System.Timers;
 
 
@@ -21,76 +23,127 @@ namespace Logic
         public abstract int GetSize(int i);
         public abstract int GetBallsNumber();
 
-        public static BallsAbstractApi CreateApi(int width, int height,DataAPI data)
+
+        public static BallsAbstractApi CreateApi(int boardWidth,int boardHeight,DataAPI data)
         {
             if (data == null)
             {
-                return new BallsAPI(width, height, DataAPI.CreateDataAPI());
+                
+                return new BallsAPI(DataAPI.CreateDataAPI(boardWidth,boardHeight));
 
             }
             else { 
-                return new BallsAPI(width, height, data);
+                return new BallsAPI(data);
             }
             
         }
     }
     internal class BallsAPI : BallsAbstractApi
     {
-        public System.Timers.Timer Timer;
+    
         public override List<BallAPI> balls { get; }
         public override  int BoardWidth { get; }
         public override  int BoardHeight { get; }
 
         private DataAPI data;
+        private CancellationTokenSource cancellationTokenSource = null;
     
 
-        public BallsAPI(int width, int height,DataAPI data)
+        public BallsAPI(DataAPI data)
         {
             balls = new List<BallAPI>();
-            Timer = new System.Timers.Timer(1000/60); 
-            Timer.Elapsed += OnTimerTick;
-            this.BoardWidth = width;
-            this.BoardHeight = height;
             this.data = data;
+            this.BoardWidth =  data.getBoardWidth();
+            this.BoardHeight = data.getBoardHeight();
  
         }
 
+        private bool isBallSpawned(BallAPI ball1,BallAPI ball2)
+        {
+            Vector2 position1 = ball1.Position;
+            Vector2 position2 = ball2.Position;
+            int distance = (int)Math.Sqrt(Math.Pow((position1.X + ball1.Vx) - (position2.X + ball2.Vx), 2) + Math.Pow((position1.Y + ball1.Vx) - (position2.Y + ball2.Vy), 2));
+            if (distance <= ball1.Size / 2 + ball2.Size / 2)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
         public override void CreateBall()
         {
-            Random random = new Random();
-            int x = random.Next(20, BoardWidth-20);
-            int y = random.Next(20, BoardHeight-20);
-            int valueX = random.Next(-2, 3);
-            int valueY = random.Next(-2, 3);
-
-            if (valueX == 0)
-            {
-                valueX = random.Next(1, 3) * 2 - 3;
-            }
-            if (valueY == 0)
-            {
-                valueY = random.Next(1, 3) * 2 - 3;
-            }
-
-            int Vx = valueX;
-            int Vy = valueY;
-            int radius = 20;
-            balls.Add(BallAPI.CreateBallAPI(x, y, Vx, Vy, radius));
+            BallAPI ball = data.createBall(cancellationTokenSource);
+            balls.Add(ball);
+            ball.subscribeToPropertyChanged(CheckCollisions);
+           
         }
 
-
-        private void OnTimerTick(object sender, ElapsedEventArgs e)
+        private void CheckCollisionWithOtherBall(BallAPI ball1, BallAPI ball2)
         {
-            foreach (var ball in balls)
+            Vector2 position1 = ball1.Position;
+            Vector2 position2 = ball2.Position;
+            int distance = (int)Math.Sqrt(Math.Pow((position1.X + ball1.Vx) - (position2.X + ball2.Vx), 2) + Math.Pow((position1.Y + ball1.Vx) - (position2.Y + ball2.Vy), 2));
+            if (distance <= ball1.Size / 2 + ball2.Size / 2 )
             {
-                ball.MoveBall(BoardWidth, BoardHeight);
+                // collision detected
+                int v1x = ball1.Vx;
+                int v1y = ball1.Vy;
+                int v2x = ball2.Vx;
+                int v2y = ball2.Vy;
+
+                ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
+                ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
+                ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
+                ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
             }
+            
         }
+
+        private void CheckCollisionWithBoard(BallAPI ball)
+        {
+            int Vx = ball.Vx;
+            int Vy = ball.Vy;
+            Vector2 position = ball.Position;
+            if (position.X + ball.Vx < 0 || position.X + ball.Vx >= BoardWidth)
+            {
+                 Vx = -ball.Vx;
+            }
+
+            if (position.Y + ball.Vy < 0 || position.Y + ball.Vy >= BoardHeight)
+            {
+                 Vy = -ball.Vy;
+            }
+            ball.setVelocity(Vx, Vy);
+        }
+
+        private void CheckCollisions(object sender,PropertyChangedEventArgs e)
+        {
+            BallAPI ball = (BallAPI)sender;
+            if(ball != null)
+            {
+                CheckCollisionWithBoard(ball);
+
+                foreach (var ball2 in balls)
+                {
+                    if (!ball2.Equals(ball))
+                    {
+                        CheckCollisionWithOtherBall(ball, ball2);
+                    }
+                }
+            }
+
+        }
+
+
         public override int GetX(int index)
         {
             if (index >= 0 && index < balls.Count)
             {
-                return balls[index].X;
+                return (int)balls[index].Position.Y;
             }
             else
             {
@@ -102,7 +155,7 @@ namespace Logic
         {
             if (index >= 0 && index < balls.Count)
             {
-                return balls[index].Y;
+                return (int)balls[index].Position.X;
             }
             else
             {
@@ -117,12 +170,19 @@ namespace Logic
 
         public override void Start()
         {
-            Timer.Start();
+          foreach(var ball in balls)
+            {
+                ball.CancellationTokenSource = new CancellationTokenSource();
+                ball.Start();
+            }
         }
 
         public override void Stop()
         {
-            Timer.Stop();
+            foreach (var ball in balls)
+            {
+                ball.CancellationTokenSource.Cancel();
+            }
         }
 
         public override int GetSize(int i)

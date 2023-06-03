@@ -20,9 +20,9 @@ namespace Data
 
         public abstract int Diameter { get; }
 
-        public abstract int Vx { get; set; }
+        public abstract int Vx { get;  }
 
-        public abstract int Vy { get; set; }
+        public abstract int Vy { get; }
 
         public abstract int Mass { get; }
         public abstract int Size { get; }
@@ -44,6 +44,8 @@ namespace Data
         private int _deltaY;
         private readonly int _size;
         private readonly int _mass;
+        private static readonly ReaderWriterLockSlim velocityLock = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim positionLock = new ReaderWriterLockSlim();
 
 
         public Ball(Vector2 position, int deltaX, int deltaY, int size, int mass, bool _isSimulationRunning)
@@ -59,7 +61,16 @@ namespace Data
 
         public override Vector2 Position
         {
-            get { return _position; }
+            get 
+            {
+                positionLock.EnterReadLock();
+                try
+                {
+                    return _position; 
+                }
+                finally { positionLock.ExitReadLock(); }
+                
+            }
         }
 
         public override int X { get { return (int)_position.X; } }
@@ -73,8 +84,16 @@ namespace Data
 
         private void setPosition(Vector2 newPosition)
         {
-            _position.X = newPosition.X;
-            _position.Y = newPosition.Y;
+            positionLock.EnterWriteLock();
+            try
+            {
+                _position.X = newPosition.X;
+                _position.Y = newPosition.Y;
+            }
+            finally
+            {
+                positionLock.ExitWriteLock();
+            }
             OnPropertyChanged(nameof(Position.X));
             OnPropertyChanged(nameof(Position.Y));
         }
@@ -89,20 +108,43 @@ namespace Data
 
         public override int Vx
         {
-            get { return _deltaX; }
-            set { _deltaX = value; }
+            get 
+            {
+                velocityLock.EnterReadLock();
+                try
+                {
+                    return _deltaX;
+                }
+                finally { velocityLock.ExitReadLock(); } 
+            }
         }
 
         public override int Vy
         {
-            get { return _deltaY; }
-            set { _deltaY = value; }
+            get
+            {
+                velocityLock.EnterReadLock();
+                try
+                {
+                    return _deltaY;
+                }
+                finally { velocityLock.ExitReadLock(); }
+            }
         }
 
         public override void setVelocity(int Vx, int Vy)
         {
-            this._deltaX = Vx;
-            this._deltaY = Vy;
+            velocityLock.EnterWriteLock();
+            try
+            {
+                this._deltaX = Vx;
+                this._deltaY = Vy;
+            }
+            finally
+            {
+                velocityLock?.ExitWriteLock();
+            }
+           
         }
 
         public override int Diameter => _size * 2;

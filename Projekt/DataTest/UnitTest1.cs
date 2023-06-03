@@ -136,16 +136,7 @@ namespace Data.Tests
             Assert.AreEqual(expectedVx, actualVx);
         }
 
-        [TestMethod]
-        public void BallAPI_VxSetter()
-        {
-            int Vx = 5;
 
-            ball.Vx = Vx;
-
-            // Assert
-            Assert.AreEqual(ball.Vx, Vx);
-        }
 
         [TestMethod]
         public void BallAPI_VyGetter()
@@ -157,16 +148,7 @@ namespace Data.Tests
             Assert.AreEqual(expectedVy, actualVy);
         }
 
-        [TestMethod]
-        public void BallAPI_VySetter()
-        {
-            int Vy = 5;
-
-            ball.Vy = Vy;
-
-            // Assert
-            Assert.AreEqual(ball.Vy, Vy);
-        }
+  
     }
 
 

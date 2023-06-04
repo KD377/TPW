@@ -1,5 +1,6 @@
 ﻿using Data;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
@@ -181,6 +182,7 @@ namespace Logic
             {
                 ball.isSimulationRunning = true;
             }
+            data.StartLogging(BallAPI.BallQueue);
         }
 
         public override void Stop()
@@ -189,6 +191,7 @@ namespace Logic
             {
                 ball.isSimulationRunning = false;
             }
+            data.StopLogging();
         }
 
         public override int GetSize(int i)

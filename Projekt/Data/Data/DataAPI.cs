@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Data
@@ -12,6 +15,9 @@ namespace Data
         public abstract BallAPI createBall(bool isSimulationRunning);
         public abstract int getBoardWidth();
         public abstract int getBoardHeight();
+        public abstract void StopLogging();
+        public abstract Task StartLogging(ConcurrentQueue<BallAPI> queue);
+        public static ConcurrentQueue<BallAPI> Queue = BallAPI.BallQueue;
         public static DataAPI CreateDataAPI(int boardWidth, int boardHeight)
         {
             return new Data(boardWidth, boardHeight);
@@ -23,6 +29,9 @@ namespace Data
     {
         private int _boardWidth;
         private int _boardHeight;
+        private bool run;
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly object fileLock = new object(); 
 
         public Data(int boardWidth, int boardHeight)
 
@@ -39,6 +48,42 @@ namespace Data
         {
             return _boardHeight;
         }
+
+        public override void StopLogging()
+        {
+            run = false;
+        }
+
+        public override async Task StartLogging(ConcurrentQueue<BallAPI> queue)
+        {
+            run = true;
+            await BallLogger(queue);
+        }
+
+
+        private async Task BallLogger(ConcurrentQueue<BallAPI> queue)
+        {
+            while(run)
+            {     
+                _stopwatch.Restart();
+                queue.TryDequeue(out BallAPI ball);
+                if(ball != null)
+                 {
+                    string log = "{" + String.Format("\n\t\"Date\": \"{0}\",\n\t\"Info\":{1}\n", DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), JsonSerializer.Serialize(ball)) + "}";
+
+                    lock (fileLock)
+                     {
+                        using (var writer = new StreamWriter("C:\\Users\\Kuba\\Desktop\\Log.json", true, Encoding.UTF8))
+                        {
+                                writer.WriteLine(log);
+                        }
+                    }
+                }
+                _stopwatch.Stop();
+                await Task.Delay((int)_stopwatch.ElapsedMilliseconds+100);
+            }
+        }
+
 
         public override BallAPI createBall(bool isSimulationRunning)
         {

@@ -1,7 +1,7 @@
 ﻿using Logic;
 using Data;
 using System.Numerics;
-
+using System.Collections.Concurrent;
 
 namespace UnitTestProject
 {
@@ -52,6 +52,16 @@ namespace UnitTestProject
             public override int getBoardWidth()
             {
                 return _boardWidth;
+            }
+
+            public override void StopLogging()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override Task StartLogging(ConcurrentQueue<BallAPI> queue)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -105,6 +115,8 @@ namespace UnitTestProject
 
             Assert.AreEqual(expectedCount, balls.Count);
         }
+
+
 
     }
 }

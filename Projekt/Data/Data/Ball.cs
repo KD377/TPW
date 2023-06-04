@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Data
 
         public abstract int Mass { get; }
         public abstract int Size { get; }
+        public static ConcurrentQueue<BallAPI> BallQueue { get; } = new ConcurrentQueue<BallAPI>();
 
         public static BallAPI CreateBallAPI(Vector2 _position, int _deltaX, int _deltaY, int _size, int _mass,bool isSimulationRunning)
         {
@@ -161,6 +163,7 @@ namespace Data
                     int newY = (int)_position.Y + _deltaY;
                     Vector2 newPosition = new Vector2(newX, newY);
                     setPosition(newPosition);
+                    BallQueue.Enqueue(this);
                 }
                 
                 double velocity = Math.Sqrt(_deltaX * _deltaX + _deltaY * _deltaY);

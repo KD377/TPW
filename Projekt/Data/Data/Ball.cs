@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ namespace Data
         private readonly int _mass;
         private static readonly ReaderWriterLockSlim velocityLock = new ReaderWriterLockSlim();
         private static readonly ReaderWriterLockSlim positionLock = new ReaderWriterLockSlim();
+        private readonly Stopwatch stopwatch = new Stopwatch();
 
 
         public Ball(Vector2 position, int deltaX, int deltaY, int size, int mass, bool _isSimulationRunning)
@@ -157,6 +159,7 @@ namespace Data
         {
             while (true)
             {
+                stopwatch.Restart();
                 if (isSimulationRunning)
                 {
                     int newX = (int)_position.X + _deltaX;
@@ -167,7 +170,8 @@ namespace Data
                 }
                 
                 double velocity = Math.Sqrt(_deltaX * _deltaX + _deltaY * _deltaY);
-                await Task.Delay(TimeSpan.FromMilliseconds(1000 / 360 * velocity));
+                stopwatch.Stop();
+                await Task.Delay(TimeSpan.FromMilliseconds(1000 / 460 * velocity+(int)stopwatch.ElapsedMilliseconds));
             }
 
 

@@ -73,7 +73,7 @@ namespace Data
 
                     lock (fileLock)
                      {
-                        using (var writer = new StreamWriter("C:\\Users\\Kuba\\Desktop\\Log.json", true, Encoding.UTF8))
+                        using (var writer = new StreamWriter("..\\..\\..\\..\\..\\Log.json", true, Encoding.UTF8))
                         {
                                 writer.WriteLine(log);
                         }

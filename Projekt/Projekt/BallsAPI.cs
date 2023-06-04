@@ -64,6 +64,15 @@ namespace Logic
         public override void CreateBall()
         {
             BallAPI ball = data.createBall(true);
+            if(balls.Count <= 0)
+            {
+                data.StartLogging(DataAPI.Queue);
+                ball.isSimulationRunning = true;
+            }
+            else
+            {
+                ball.isSimulationRunning = balls[0].isSimulationRunning;
+            }
             balls.Add(ball);
             ball.subscribeToPropertyChanged(CheckCollisions);
         }

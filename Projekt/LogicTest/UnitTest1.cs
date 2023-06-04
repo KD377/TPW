@@ -56,12 +56,12 @@ namespace UnitTestProject
 
             public override void StopLogging()
             {
-                throw new NotImplementedException();
+                
             }
 
             public override Task StartLogging(ConcurrentQueue<BallAPI> queue)
             {
-                throw new NotImplementedException();
+                return Task.CompletedTask;
             }
         }
 
